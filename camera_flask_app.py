@@ -261,22 +261,22 @@ def audio_index():
     return render_template('index.html')
 #stop
 
-#out put mic
-if request.method == 'POST':
-    try:
-        target =  request.form["target"]
-        try:
-            samplerate = 16000
-            file =  request.files["file"]
-            x = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
-            src = f'{temp_folder}/{x}.wav' #file.name
-            data, samplerate = sf.read(io.BytesIO(file.read()))
-            print("\n\n\n\n")
-            print("*"*30)
-            print(len(data), samplerate)
-            sf.write(src,data, samplerate)
+# #out put mic
+# if request.method == 'POST':
+#     try:
+#         target =  request.form["target"]
+#         try:
+#             samplerate = 16000
+#             file =  request.files["file"]
+#             x = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
+#             src = f'{temp_folder}/{x}.wav' #file.name
+#             data, samplerate = sf.read(io.BytesIO(file.read()))
+#             print("\n\n\n\n")
+#             print("*"*30)
+#             print(len(data), samplerate)
+#             sf.write(src,data, samplerate)
 
-# end
+# # end
 
 @app.route('/audiorecog', methods = ['GET', 'POST'])
 def audiorecog(video_stream=None):
@@ -293,8 +293,20 @@ def audiorecog(video_stream=None):
 ""
 
 
+import ssl
 if __name__ == '__main__':
-    app.run('192.168.0.111')
-
+#     app.run(host='0.0.0.0', port=5031, debug=True, ssl_context=('cert.pem', 'key.pem'))
+    https = False
+    https =  True
+    mainpath = os.path.abspath(os.getcwd())
+    if https==True:
+        context = ssl.SSLContext()
+        context.load_cert_chain('cert.pem','key.pem')
+        app.run(host='0.0.0.0', port=5031, debug=False , ssl_context=context)
+    else:
+        app.run(host='0.0.0.0', port=5031, debug=False)
+    
+    
+    
 camera.release()
 
